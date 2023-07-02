@@ -1,24 +1,21 @@
-# app
+# server
 
 ## Project setup
 ```
-yarn install
+yum install
 ```
 
 ### Compiles and hot-reloads for development
 ```
-yarn serve
+yum start
 ```
 
-### Compiles and minifies for production
+### Test route
 ```
-yarn build
-```
-
-### Lints and fixes files
-```
-yarn lint
+http://192.168.11.215:3000/users/bar
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Test crawl With Keyword @Java
+```
+http://127.0.0.1:3000/nativaRoute/crawl/Java
+```
