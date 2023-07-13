@@ -1,6 +1,7 @@
 const router = require("koa-router")();
 const { client, INDEX_NAME } = require("../config/client");
 const crawl = require("../config/crawl");
+const reader = require("../config/read");
 
 router.prefix("/nativaRoute");
 
@@ -10,7 +11,7 @@ router.get("/", function (ctx, next) {
 });
 
 //标准转换
-router.get("/transfer/:dir/:name/:extra", async (ctx, next) => {
+router.get("/read/:dir/:name/:extra", async (ctx, next) => {
   // 获取参数
   let dir = ctx.params.dir;
   let name = ctx.params.name;
@@ -19,7 +20,8 @@ router.get("/transfer/:dir/:name/:extra", async (ctx, next) => {
   console.log(dir);
   console.log(name);
   console.log(extra);
-
+  let data = await reader(dir,name,extra);
+  console.log(data);
   // 搜素逻辑
   ctx.body = dir + "的转换已经完成，请查询相同目录下.trans.md文件";
 });
