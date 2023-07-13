@@ -28,9 +28,9 @@ const regex_Logo_2 = (txt) => {
 
 // crawl
 module.exports = async (dir, name, extra) => {
-  let arr = []; 
+  let arr = [];
   let preArr = [];
-  
+
   const filePath = path.join(__dirname, "..", "..", "ctd", "md", dir, name);
   // 创建可读流
   const stream = fs.createReadStream(filePath);
