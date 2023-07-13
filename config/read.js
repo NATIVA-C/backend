@@ -14,7 +14,7 @@ const regex_Logo_1 = (txt) => {
   }
 };
 
-const regex_Logo_2 = (txt) => {
+const regex_tile_2 = (txt) => {
   const regex = /\!\[ExamTopics Logo\]\((.*?)\)/;
   const matches = txt.match(regex);
 
@@ -42,12 +42,14 @@ module.exports = async (dir, name, extra) => {
   const outArr = [];
   // 逐行读取文件内容
   rl.on("line", (line) => {
+    //regex_Logo_1
     if (regex_Logo_1(line)) {
       console.log("aa");
       outArr.push("## " + name);
       preArr.push(line);
+      return;
     }
-
+    //regex_tile_2
     // console.log(line); // 在这里处理每行的内容
     if (line != null) {
       arr.push(line);
