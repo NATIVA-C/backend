@@ -1,8 +1,16 @@
 const readline = require("readline");
 const fs = require("fs");
 const path = require("path");
+const writer = require("./write");
+const preArr = [];
+const allArr = [];
 
-// 去除空格
+const insertData = (data) => {
+  preArr.push(data); // 插入新数据
+};
+
+
+// 匹配logo
 const regex_Logo_1 = (txt) => {
   const regex = /\!\[ExamTopics Logo\]\((.*?)\)/;
   const matches = txt.match(regex);
@@ -26,11 +34,9 @@ const regex_tile_2 = (txt) => {
   // }
 };
 
-// crawl
+// 读取文件
 module.exports = async (dir, name, extra) => {
-  let arr = [];
-  let preArr = [];
-
+  let outArr = [];
   const filePath = path.join(__dirname, "..", "..", "ctd", "md", dir, name);
   // 创建可读流
   const stream = fs.createReadStream(filePath);
@@ -39,34 +45,24 @@ module.exports = async (dir, name, extra) => {
     input: stream,
     crlfDelay: Infinity, // 保留换行符
   });
-  const outArr = [];
+
   // 逐行读取文件内容
   rl.on("line", (line) => {
+    //每行保留到内存
+    allArr.push(line);
     //regex_Logo_1
     if (regex_Logo_1(line)) {
-      console.log("aa");
       outArr.push("## " + name);
-      preArr.push(line);
-      return;
-    }
-    //regex_tile_2
-    // console.log(line); // 在这里处理每行的内容
-    if (line != null) {
-      arr.push(line);
+      insertData(line);
     }
   });
 
   // 读取完成时触发的事件
   rl.on("close", () => {
-    fileOutput(outArr);
-    console.log("文件读取完成");
+    let data = writer(outArr, filePath);
+    console.log(data);
   });
-  return "over" + extra + name + dir;
+  return "请查看" + filePath + ".tf.md";
 };
 
-const fileOutput = (outArr) => {
-  // 遍历列表
-  outArr.forEach((item) => {
-    console.log(item);
-  });
-};
+

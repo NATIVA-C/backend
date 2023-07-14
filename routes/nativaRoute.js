@@ -12,19 +12,15 @@ router.get("/", function (ctx, next) {
 
 //标准转换
 router.get("/read/:dir/:name/:extra", async (ctx, next) => {
-  // 获取参数
   let dir = ctx.params.dir;
   let name = ctx.params.name;
   let extra = ctx.params.extra;
-
-  console.log(dir);
-  console.log(name);
-  console.log(extra);
-  let data = await reader(dir,name,extra);
+  let data = await reader(dir, name, extra);
   console.log(data);
-  // 搜素逻辑
-  ctx.body = dir + "的转换已经完成，请查询相同目录下.trans.md文件";
+  ctx.body = data;
 });
+
+
 
 // 爬虫 书本列表
 router.get("/crawl/:keyword", async (ctx, next) => {
@@ -79,52 +75,5 @@ router.get("/search/:keyword/:pageNo/:pageSize", async (ctx, next) => {
     list: resSearch.body.hits.hits.map((v) => v._source),
   };
 });
-
-// 高亮搜索
-router.get(
-  "/search/highlight/:keyword/:pageNo/:pageSize",
-  async (ctx, next) => {
-    // 获取参数
-    let keyword = ctx.params.keyword;
-    let pageNo = ctx.params.pageNo;
-    let pageSize = ctx.params.pageSize;
-
-    // 查询
-    const resSearch = await client.search({
-      index: INDEX_NAME,
-      body: {
-        query: {
-          match: {
-            title: keyword,
-          },
-        },
-        // 高亮查询
-        highlight: {
-          pre_tags: "<span style='color:red;'>",
-          post_tags: "</span>",
-          fields: {
-            title: {},
-          },
-        },
-      },
-      from: (pageNo - 1) * pageSize,
-      size: pageSize,
-    });
-
-    // 替换 高亮属性字段
-    let list = resSearch.body.hits.hits.map((v) => {
-      v._source.title = v.highlight.title[0];
-      return v._source;
-    });
-
-    // 搜素逻辑
-    ctx.body = {
-      pageNo: pageNo,
-      pageSize: pageSize,
-      totals: resSearch.body.hits.total.value,
-      list: list,
-    };
-  }
-);
 
 module.exports = router;
