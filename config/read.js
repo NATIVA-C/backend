@@ -24,7 +24,7 @@ module.exports = async (dir, name, extra) => {
   // 读取完成时触发的事件
   rl.on("close", () => {
     console.log(allArr.length);
-    let data = writer(allArr, filePath,name);
+    let data = writer(allArr, dir,name);
     console.log(data);
   });
 

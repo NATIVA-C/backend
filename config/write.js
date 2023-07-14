@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 // 将每个元素逐行写入 .md 文件
-module.exports = async (allArr, filePath, name) => {
+module.exports = async (allArr, dir, name) => {
     let outPutArr = [];
     let answerArr =[];
     let consecutiveEmptyLines = 0;
@@ -106,8 +106,7 @@ module.exports = async (allArr, filePath, name) => {
 
     console.log("-------------------------------");
     console.log(outPutArr.length);
-
-    const outputPath = path.join(filePath + '.tr.md');
+    const outputPath = path.join(__dirname, "..", "..", "ctd", "tf",dir, name);
     const stream = fs.createWriteStream(outputPath);
     outPutArr.forEach((line) => {
         stream.write(line + '\n');
