@@ -12,10 +12,11 @@ yum start
 
 ### Test route
 ```
-http://192.168.11.215:3000/users/bar
+http://localhost:3000/users/bar
 ```
 
 ### Test crawl With Keyword @Java
 ```
 http://127.0.0.1:3000/nativaRoute/crawl/Java
+http://127.0.0.1:3000/nativaRoute/read/Amazon/Network001 test/others
 ```
