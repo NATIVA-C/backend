@@ -39,7 +39,7 @@ module.exports = async (allArr, filePath, name) => {
 
         // References:
         // https://aws.amazon.com/blogs/security/how-to-connect-your-on-premises-active-directory-to-aws-using-ad-connector/
-        if (txt.trim() === 'References:'
+        if ((txt.trim() === 'References:' || txt.trim() === 'Reference:') 
             && regex_content_3(preTxt_11)
             && regex_content_4(preTxt_01)
             && preTxt_12.trim() === ''
@@ -49,7 +49,7 @@ module.exports = async (allArr, filePath, name) => {
 
         // References:
         // https://aws.amazon.com/blogs/security/how-to-connect-your-on-premises-active-directory-to-aws-using-ad-connector/
-        if (preTxt_11.trim() === 'References:'
+        if ((preTxt_11.trim() === 'References:' ||preTxt_11.trim() === 'Reference:') 
             && regex_content_3(preTxt_12)
             && regex_content_4(txt)
             && preTxt_01.trim() === '') {
@@ -82,6 +82,19 @@ module.exports = async (allArr, filePath, name) => {
             let answer = foundCorrectAnswer(answerArr);
             answerArr=[];
             outPutArr.push("**Correct answer : "+"( "+answer+" )**");
+            continue;
+        }
+
+        if(regex_content_6(txt)){
+            outPutArr.push('');
+            outPutArr.push(txt);
+            outPutArr.push('');
+            continue;
+        }
+
+        if(regex_content_7(txt)){
+            outPutArr.push('- '+txt);
+            continue;
         }
 
         if (regex_content_2(txt)) {
@@ -146,31 +159,62 @@ const regex_content_5 = (txt) => {
     return txt.match(regex);
 };
 
+
+// imgs
+const regex_content_6 = (txt) => {
+    const regex = /!\[img\]\((https:\/\/www\.examtopics\.com.+)\)/;
+    return txt.match(regex);
+};
+
+// A. B.
+const regex_content_7 = (txt) => {
+    const regex = /^(?:[A-Z]\.)$/;
+    return txt.match(regex);
+};
+
+
 // foundCorrectAnswer
 const foundCorrectAnswer = (valuesList) => {
     let foundCommunityVote = false;
-    let maxPercentage = 0;
-    let answerWithMaxPercentage = '';
+    let correctAnswer = '';
 
     for (let i = 0; i < valuesList.length; i++) {
         const value = valuesList[i];
 
         if (value === '*Community vote distribution*') {
             foundCommunityVote = true;
-        } else if (foundCommunityVote && value.includes('(') && value.includes(')')) {
-            const regex = /([A-Z]+)\s+\((\d+)%\)/;
-            const matches = value.match(regex);
+        } else if (value.startsWith('**Correct Answer:**')) {
+            let regex = /\*\*Correct Answer:\*\* \*([A-Z]+)\*/;
+            correctAnswer = value.match(regex)[1];
+        }
+    }
 
-            if (matches) {
-                const answer = matches[1];
-                const percentage = parseInt(matches[2], 10);
+    if (foundCommunityVote) {
+        let maxPercentage = 0;
+        let answerWithMaxPercentage = '';
 
-                if (percentage > maxPercentage) {
-                    maxPercentage = percentage;
-                    answerWithMaxPercentage = answer;
+        for (let i = 0; i < valuesList.length; i++) {
+            const value = valuesList[i];
+
+            if (value.includes('(') && value.includes(')')) {
+                const regex = /([A-Z]+)\s+\((\d+)%\)/;
+                const matches = value.match(regex);
+
+                if (matches) {
+                    const answer = matches[1];
+                    const percentage = parseInt(matches[2], 10);
+
+                    if (percentage > maxPercentage) {
+                        maxPercentage = percentage;
+                        answerWithMaxPercentage = answer;
+                    }
                 }
             }
         }
+
+        return answerWithMaxPercentage;
+    } else {
+        return correctAnswer;
     }
-    return answerWithMaxPercentage;
+    
 };
