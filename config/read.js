@@ -1,7 +1,7 @@
 const readline = require("readline");
 const fs = require("fs");
 const path = require("path");
-const writer = require("./write");
+const amazonWriter = require("./amazonWrite");
 
 // 读取文件
 module.exports = async (dir, name, extra) => {
@@ -21,13 +21,32 @@ module.exports = async (dir, name, extra) => {
     allArr.push(line);
   });
 
+  let data = '';
   // 读取完成时触发的事件
   rl.on("close", () => {
-    console.log(allArr.length);
-    let data = writer(allArr, dir,name);
-    console.log(data);
+    switch (dir) {
+      case 'Amazon':
+        // 执行 Amazon 相关操作
+        console.log('原来有:');
+        console.log(allArr.length);
+        data = amazonWriter(allArr, dir,name);
+        console.log(data);
+        break;
+      case 'microsoft':
+        // 执行 Microsoft 相关操作
+        console.log('执行 Microsoft 相关操作');
+        break;
+      case 'LIP':
+        // 执行 LIP 相关操作
+        console.log('执行 LIP 相关操作');
+        break;
+      default:
+        // 未知项目
+        console.log('未知项目');
+        break;
+    }
   });
-
+  
   return "请查看" + filePath + ".tf.md";
 };
 
