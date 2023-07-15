@@ -107,7 +107,7 @@ module.exports = async (allArr, dir, name) => {
     console.log("-----------------------------------------");
     console.log('转换后：');
     console.log(outPutArr.length);
-    const outputPath = path.join(__dirname, "..", "..", "ctd", "tf",dir, name);
+    const outputPath = path.join(__dirname, "..", "..", "ctd", "tf",dir, name+'.tf.md');
     const stream = fs.createWriteStream(outputPath);
     outPutArr.forEach((line) => {
         stream.write(line + '\n');

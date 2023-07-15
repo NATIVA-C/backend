@@ -18,6 +18,27 @@ module.exports = async (allArr, dir, name) => {
             continue;
         }
 
+        if(regex_content_9(txt)){
+            outPutArr.push("**Correct answer: ↓↓↓ **");
+            outPutArr.push('');
+            outPutArr.push(txt.replace('**Correct Answer:** ','').replace(/\*/g, '').trim());
+            outPutArr.push('');
+            continue;
+        }
+        if(regex_content_8(txt)){
+            outPutArr.push("**Correct answer: ↓↓↓ **");
+            outPutArr.push('');
+            outPutArr.push(regex_content_8_1(txt).trim());
+            outPutArr.push('');
+            continue;
+        }
+        //imgs
+        if(regex_content_6(txt)){
+            outPutArr.push('');
+            outPutArr.push(txt);
+            outPutArr.push('');
+            continue;
+        }
         if (regex_tile_2(txt)) {
             outPutArr.push("");
             continue;
@@ -85,12 +106,7 @@ module.exports = async (allArr, dir, name) => {
             continue;
         }
 
-        if(regex_content_6(txt)){
-            outPutArr.push('');
-            outPutArr.push(txt);
-            outPutArr.push('');
-            continue;
-        }
+
 
         if(regex_content_7(txt)){
             outPutArr.push('- '+txt);
@@ -107,7 +123,7 @@ module.exports = async (allArr, dir, name) => {
     console.log("-----------------------------------------");
     console.log('转换后：');
     console.log(outPutArr.length);
-    const outputPath = path.join(__dirname, "..", "..", "ctd", "tf",dir, name);
+    const outputPath = path.join(__dirname, "..", "..", "ctd", "tf",dir, name+'.tf.md');
     const stream = fs.createWriteStream(outputPath);
     outPutArr.forEach((line) => {
         stream.write(line + '\n');
@@ -172,6 +188,28 @@ const regex_content_7 = (txt) => {
     return txt.match(regex);
 };
 
+// Correct Answer:\*\*\*\!\[img\]
+const regex_content_8 = (txt) => {
+    const regex = /\*\*Correct Answer:\*\*\*\!\[img\]\(([^)]+)\)\*/;
+    return txt.match(regex);
+};
+
+// Correct Answer:\*\*\*\!\[img\]
+const regex_content_8_1 = (txt) => {
+    const regex = /\*\*Correct Answer:\*\*\*\!\[img\]\(([^)]+)\)\*/;
+    let value=txt.match(regex)[1];
+    return '![img]('+value+')';
+};
+// Correct Answer:\*\*\*\!\[img\]
+const regex_content_9 = (txt) => {
+    const targetString = '**Correct Answer:** *![img](https:';
+    if(txt.includes(targetString)){
+        console.log(txt);
+        return true;
+    }else{
+        return false;
+    }
+};
 
 // foundCorrectAnswer
 const foundCorrectAnswer = (valuesList) => {
