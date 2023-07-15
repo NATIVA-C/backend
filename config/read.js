@@ -2,6 +2,7 @@ const readline = require("readline");
 const fs = require("fs");
 const path = require("path");
 const amazonWriter = require("./amazonWrite");
+const microsoftWriter = require("./microsofWrite");
 
 // 读取文件
 module.exports = async (dir, name, extra) => {
@@ -32,9 +33,12 @@ module.exports = async (dir, name, extra) => {
         data = amazonWriter(allArr, dir,name);
         console.log(data);
         break;
-      case 'microsoft':
+      case 'Microsoft':
         // 执行 Microsoft 相关操作
-        console.log('执行 Microsoft 相关操作');
+        console.log('原来有:');
+        console.log(allArr.length);
+        data = microsoftWriter(allArr, dir,name);
+        console.log(data);
         break;
       case 'LIP':
         // 执行 LIP 相关操作
